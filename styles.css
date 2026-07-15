@@ -8,8 +8,18 @@
 
 * { box-sizing: border-box; }
 html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }
-body { background: #080808; color: var(--ink); font-family: Pretendard, 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, sans-serif; }
+body {
+  background: #080808;
+  color: var(--ink);
+  font-family: Pretendard, 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, sans-serif;
+  /* Korean typography: break lines at word (어절) boundaries, never mid-word */
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  -webkit-text-size-adjust: 100%;
+}
 button { font: inherit; }
+/* Hard line breaks that only apply on the wide 16:9 layout */
+.brk { display: inline; }
 
 .deck { position: relative; width: 100vw; height: 100vh; }
 .slide {
@@ -90,22 +100,46 @@ button { font: inherit; }
 noscript { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; background: white; }
 
 @media (max-width: 900px), (max-aspect-ratio: 4/3) {
-  html, body { overflow: auto; }
-  .deck { min-height: 100vh; }
-  .slide { position: relative; display: none; min-height: 100vh; overflow-y: auto; }
+  html, body { overflow: auto; height: auto; min-height: 100%; }
+  .deck { min-height: 100vh; height: auto; }
+  .slide { position: relative; display: none; min-height: 100vh; overflow: visible; }
   .slide.is-active { display: block; }
+
+  /* Drop the wide-layout hard breaks; let keep-all wrap naturally on phones */
+  .brk { display: none; }
+
   .slide--concept { padding: 8vh 7vw 14vh; }
   .slide--concept.is-active { display: grid; grid-template-columns: 1fr; }
+  .concept-copy h2 { font-size: clamp(32px, 8.6vw, 58px); line-height: 1.08; letter-spacing: -.035em; }
+  .statement { font-size: clamp(19px, 4.6vw, 27px); line-height: 1.5; letter-spacing: -.02em; }
+  .body-copy { font-size: clamp(14px, 3.7vw, 18px); line-height: 1.75; }
   .concept-image { height: 38vh; }
+
   .slide--artist.is-active { display: grid; grid-template-columns: 1fr; padding: 7vh 7vw 15vh; }
+  .artist-heading h2 { font-size: clamp(40px, 12vw, 76px); line-height: 1.02; letter-spacing: -.04em; }
+  .work-title { font-size: clamp(17px, 4.6vw, 24px); }
+  .artist-statement { font-size: clamp(20px, 4.9vw, 30px); line-height: 1.46; letter-spacing: -.02em; }
   .artist-visual { padding-right: 0; padding-bottom: 32px; border-right: 0; border-bottom: 1px solid var(--line); }
   .artist-copy { padding: 34px 0 0; }
   .work-image { width: 75%; height: 42vh; }
   .portrait-placeholder { right: 0; width: 23%; bottom: 32px; }
-  .cover-meta { flex-direction: column; gap: 8px; }
-  .deliverables { grid-template-columns: 1fr; }
+  .info-grid { grid-template-columns: 1fr; gap: 22px; }
+  .info-grid h3 { font-size: clamp(16px, 4.3vw, 21px); }
+  .info-grid li { font-size: clamp(13px, 3.5vw, 16px); line-height: 1.6; }
+
+  .cover-copy { left: 6vw; right: 6vw; top: 13vh; width: auto; }
+  .cover-copy h1 { font-size: clamp(44px, 13.5vw, 82px); line-height: .98; letter-spacing: -.045em; margin-bottom: 22px; }
+  .lead { font-size: clamp(15px, 4vw, 19px); line-height: 1.6; }
+  .cover-meta { left: 6vw; right: 6vw; flex-direction: column; gap: 8px; }
+
+  .slide--closing { padding: 9vh 7vw 12vh; }
+  .closing-copy h2 { font-size: clamp(34px, 9vw, 60px); line-height: 1.06; letter-spacing: -.035em; }
+  .deliverables { grid-template-columns: 1fr; margin-top: 6vh; }
   .deliverables article { border-right: 0; border-bottom: 1px solid rgba(255,255,255,.16); padding: 20px 0; min-height: 0; }
   .deliverables article + article { padding-left: 0; }
+  .deliverables h3 { font-size: clamp(19px, 5vw, 26px); }
+  .deliverables p { font-size: clamp(13px, 3.5vw, 16px); line-height: 1.65; }
+  .disclaimer { position: static; margin-top: 34px; }
 }
 
 @media print {
