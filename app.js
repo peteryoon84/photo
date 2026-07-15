@@ -3,6 +3,8 @@
   const previousButton = document.getElementById('prev');
   const nextButton = document.getElementById('next');
   const fullscreenButton = document.getElementById('fullscreen');
+  const motionToggleButton = document.querySelector('.motion-toggle');
+  const motionVideo = document.querySelector('.motion-video');
   const counter = document.getElementById('counter');
   const progress = document.getElementById('progress');
 
@@ -17,6 +19,17 @@
       slide.classList.toggle('is-active', active);
       slide.setAttribute('aria-hidden', active ? 'false' : 'true');
     });
+    if (motionVideo) {
+      const motionSlideActive = motionVideo.closest('.slide')?.classList.contains('is-active');
+      if (motionSlideActive) {
+        motionVideo.currentTime = 0;
+        motionVideo.play()
+          .then(() => { if (motionToggleButton) motionToggleButton.textContent = 'PAUSE'; })
+          .catch(() => { if (motionToggleButton) motionToggleButton.textContent = 'PLAY'; });
+      } else {
+        motionVideo.pause();
+      }
+    }
     counter.textContent = `${String(current + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
     progress.style.width = `${((current + 1) / slides.length) * 100}%`;
     window.history.replaceState(null, '', `#${current + 1}`);
@@ -35,6 +48,16 @@
       else await document.exitFullscreen();
     } catch (_) {
       // Fullscreen can be unavailable in embedded browsers. Navigation still works.
+    }
+  });
+
+  motionToggleButton?.addEventListener('click', () => {
+    if (!motionVideo) return;
+    if (motionVideo.paused) {
+      motionVideo.play().then(() => { motionToggleButton.textContent = 'PAUSE'; }).catch(() => {});
+    } else {
+      motionVideo.pause();
+      motionToggleButton.textContent = 'PLAY';
     }
   });
 
